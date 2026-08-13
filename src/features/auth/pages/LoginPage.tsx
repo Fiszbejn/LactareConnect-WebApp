@@ -1,15 +1,38 @@
 import { type FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { isAxiosError } from 'axios';
 import { Logo, LogoMark } from '../../../shared/brand/Logo';
+import { apiClient } from '../../../shared/api/client';
+import { setToken } from '../../../shared/api/auth';
 
 export function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function handleSubmit(event: FormEvent) {
+  async function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    navigate('/');
+    setError(null);
+    setIsSubmitting(true);
+    try {
+      const { data } = await apiClient.post<{ accessToken: string }>('/auth/login', {
+        email,
+        senha: password,
+        tipo: 'administrador',
+      });
+      setToken(data.accessToken);
+      navigate('/');
+    } catch (err) {
+      if (isAxiosError(err) && err.response?.status === 401) {
+        setError('E-mail ou senha incorretos.');
+      } else {
+        setError('Não foi possível entrar. Verifique se o backend está rodando.');
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -90,11 +113,18 @@ export function LoginPage() {
             <a className="text-base font-semibold text-brand">Esqueci minha senha</a>
           </div>
 
+          {error && (
+            <p className="mt-4 rounded-lg bg-error/10 px-4 py-2.5 text-sm font-medium text-error">
+              {error}
+            </p>
+          )}
+
           <button
             type="submit"
-            className="mt-8 h-16 w-full rounded-xl bg-brand text-lg font-bold text-white transition hover:bg-[#003a75]"
+            disabled={isSubmitting}
+            className="mt-8 h-16 w-full rounded-xl bg-brand text-lg font-bold text-white transition hover:bg-[#003a75] disabled:opacity-60"
           >
-            Entrar no painel
+            {isSubmitting ? 'Entrando…' : 'Entrar no painel'}
           </button>
 
           <div className="mt-7 flex items-start gap-3 rounded-xl border border-dashed border-line bg-white p-5">
