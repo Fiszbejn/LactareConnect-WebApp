@@ -1,5 +1,6 @@
 import { type FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Logo, LogoMark } from '../../../shared/brand/Logo';
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -12,66 +13,114 @@ export function LoginPage() {
   }
 
   return (
-    <div className="flex h-screen w-full font-sans">
-      <div className="relative hidden flex-[1.05] flex-col overflow-hidden bg-gradient-to-br from-brand via-[#003266] to-brand-light p-14 text-white lg:flex">
-        <span className="font-sans text-2xl font-extrabold">
-          Lactare<span className="text-brand-light">.</span>
-        </span>
+    <div className="flex min-h-screen w-full font-sans">
+      <div className="relative hidden flex-[40] flex-col overflow-hidden bg-gradient-to-br from-brand via-[#003266] to-brand-light p-12 text-white lg:flex lg:p-16">
+        <LogoMark
+          size={520}
+          className="pointer-events-none absolute -bottom-24 -right-24 text-white opacity-[0.15]"
+        />
+        <Logo size={34} dark />
+
         <div className="flex-1" />
-        <div className="relative z-10">
-          <div className="text-[38px] font-extrabold leading-tight tracking-tight">
+
+        <div className="relative z-10 max-w-xl">
+          <div className="text-5xl font-extrabold leading-[1.05] tracking-tight xl:text-6xl">
             Painel
             <br />
             Lactare<span className="text-brand-light">.</span>
           </div>
-          <p className="mt-4 max-w-[380px] text-sm leading-relaxed opacity-85">
-            Espaço exclusivo para coordenadores e equipes Lactare acompanharem o
-            impacto das nossas doadoras em tempo real.
+          <p className="mt-5 max-w-md text-base leading-relaxed opacity-90 xl:text-lg">
+            Espaço exclusivo para coordenadores e equipes Lactare acompanharem
+            o impacto das nossas doadoras em tempo real.
           </p>
+          <div className="mt-8 flex max-w-md items-start gap-3 rounded-2xl bg-white/10 p-5 text-sm leading-relaxed">
+            <span className="text-lg">♡</span>
+            <span>
+              <b>+18%</b> de doadoras ativas em maio. <br />
+              Cada gota chegando mais longe.
+            </span>
+          </div>
         </div>
       </div>
 
-      <div className="flex flex-1 items-center justify-center bg-bg p-10">
-        <form onSubmit={handleSubmit} className="w-full max-w-[380px]">
-          <div className="mb-3 text-[11px] font-bold uppercase tracking-[0.6px] text-brand">
+      <div className="flex flex-[60] items-center justify-center bg-bg p-8 sm:p-16">
+        <form onSubmit={handleSubmit} className="w-full max-w-xl">
+          <div className="mb-6 flex justify-center lg:hidden">
+            <Logo size={34} />
+          </div>
+
+          <div className="mb-4 text-sm font-bold uppercase tracking-[0.6px] text-brand">
             Acesso administrativo
           </div>
-          <h1 className="mb-2.5 text-[28px] font-extrabold text-ink">
+          <h1 className="mb-4 text-5xl font-extrabold leading-tight text-ink">
             Que bom te ver de novo.
           </h1>
-          <p className="mb-7 text-sm text-muted">
+          <p className="mb-10 text-lg text-muted">
             Faça login para acompanhar o impacto das nutrizes Lactare.
           </p>
 
-          <div className="flex flex-col gap-3.5">
-            <label className="flex flex-col gap-1.5">
-              <span className="text-[11px] font-semibold text-muted">E-mail corporativo</span>
+          <div className="flex flex-col gap-5">
+            <label className="flex flex-col gap-2">
+              <span className="text-sm font-semibold text-muted">E-mail corporativo</span>
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="h-11 rounded-[10px] border-[1.5px] border-line px-3.5 text-sm text-ink outline-none focus:border-brand focus:ring-[3px] focus:ring-brand-tint"
+                className="h-16 rounded-xl border-[1.5px] border-line px-5 text-lg text-ink outline-none focus:border-brand focus:ring-4 focus:ring-brand-tint"
               />
             </label>
-            <label className="flex flex-col gap-1.5">
-              <span className="text-[11px] font-semibold text-muted">Senha</span>
+            <label className="flex flex-col gap-2">
+              <span className="text-sm font-semibold text-muted">Senha</span>
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="h-11 rounded-[10px] border-[1.5px] border-line px-3.5 text-sm text-ink outline-none focus:border-brand focus:ring-[3px] focus:ring-brand-tint"
+                className="h-16 rounded-xl border-[1.5px] border-line px-5 text-lg text-ink outline-none focus:border-brand focus:ring-4 focus:ring-brand-tint"
               />
             </label>
           </div>
 
+          <div className="mt-5 flex items-center justify-between">
+            <label className="flex items-center gap-2.5 text-base text-muted">
+              <input type="checkbox" defaultChecked className="h-5 w-5 accent-brand" />
+              Manter conectado
+            </label>
+            <a className="text-base font-semibold text-brand">Esqueci minha senha</a>
+          </div>
+
           <button
             type="submit"
-            className="mt-6 h-12 w-full rounded-xl bg-brand text-sm font-bold text-white"
+            className="mt-8 h-16 w-full rounded-xl bg-brand text-lg font-bold text-white transition hover:bg-[#003a75]"
           >
             Entrar no painel
           </button>
+
+          <div className="mt-7 flex items-start gap-3 rounded-xl border border-dashed border-line bg-white p-5">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 20 20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="mt-0.5 shrink-0 text-muted"
+            >
+              <rect x="4" y="9" width="12" height="8" rx="1.5" />
+              <path d="M7 9V6a3 3 0 0 1 6 0v3" />
+            </svg>
+            <p className="text-base leading-relaxed text-muted">
+              Acesso exclusivo a coordenadores e equipe Lactare. Solicitações
+              via <b className="text-ink">admin@lactare.org</b>.
+            </p>
+          </div>
+
+          <p className="mt-9 text-center text-sm text-faint">
+            © Lactare 2026 · Conforme a LGPD · Termos · Privacidade
+          </p>
         </form>
       </div>
     </div>

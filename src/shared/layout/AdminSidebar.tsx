@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom';
+import { Logo } from '../brand/Logo';
 
 const iconProps = {
   fill: 'none',
@@ -43,9 +44,7 @@ export function AdminSidebar() {
   return (
     <div className="flex h-full w-[220px] shrink-0 flex-col border-r border-line bg-white">
       <div className="border-b border-line-soft px-[18px] pb-[22px] pt-5">
-        <span className="font-sans text-lg font-extrabold text-ink">
-          Lactare<span className="text-brand">.</span>
-        </span>
+        <Logo size={26} />
         <div className="mt-2.5 inline-flex items-center gap-[5px] rounded-lg bg-brand-tint px-2 py-0.5 text-[9.5px] font-bold tracking-[0.4px] text-brand">
           <span className="h-[5px] w-[5px] rounded-full bg-brand" />
           ADMIN
