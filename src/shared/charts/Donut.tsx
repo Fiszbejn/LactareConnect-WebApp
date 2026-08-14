@@ -12,10 +12,10 @@ type DonutProps = {
 
 export function Donut({ segments, centerLabel, centerValue }: DonutProps) {
   const total = segments.reduce((sum, s) => sum + s.value, 0) || 1;
-  const R = 48;
-  const r = 30;
-  const cx = 56;
-  const cy = 56;
+  const R = 78;
+  const r = 50;
+  const cx = 90;
+  const cy = 90;
   let start = 0;
 
   const arcs = segments.map((s) => {
@@ -38,24 +38,24 @@ export function Donut({ segments, centerLabel, centerValue }: DonutProps) {
   });
 
   return (
-    <div className="flex items-center gap-5">
-      <svg width="112" height="112" viewBox="0 0 112 112" className="shrink-0">
+    <div className="flex w-full items-center gap-10">
+      <svg width="180" height="180" viewBox="0 0 180 180" className="shrink-0">
         {arcs.map((a, i) => (
           <path key={i} d={a.d} fill={a.color} />
         ))}
-        <text x="56" y="53" textAnchor="middle" className="fill-ink text-[18px] font-extrabold">
+        <text x="90" y="86" textAnchor="middle" className="fill-ink text-[28px] font-extrabold">
           {centerValue}
         </text>
-        <text x="56" y="68" textAnchor="middle" className="fill-muted text-[9px]">
+        <text x="90" y="108" textAnchor="middle" className="fill-muted text-[13px]">
           {centerLabel}
         </text>
       </svg>
-      <div className="flex flex-1 flex-col gap-2">
+      <div className="flex flex-1 flex-col gap-4">
         {segments.map((s, i) => (
-          <div key={i} className="flex items-center gap-2">
-            <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: s.color }} />
-            <span className="flex-1 text-[11.5px] text-ink">{s.label}</span>
-            <span className="text-[11.5px] font-semibold text-muted">{s.value}</span>
+          <div key={i} className="flex items-center gap-3 border-b border-line-soft pb-4 last:border-0 last:pb-0">
+            <span className="h-3 w-3 shrink-0 rounded-full" style={{ background: s.color }} />
+            <span className="flex-1 text-sm text-ink">{s.label}</span>
+            <span className="text-base font-semibold text-muted">{s.value}</span>
           </div>
         ))}
       </div>

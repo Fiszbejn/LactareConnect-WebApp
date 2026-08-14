@@ -57,12 +57,12 @@ export function DashboardPage() {
         </div>
 
         <div className="mb-5 grid grid-cols-[1.4fr_1fr] gap-4">
-          <div className="rounded-2xl border border-line bg-white p-5">
-            <div className="mb-4 font-sans text-[15px] font-extrabold text-ink">Funil de conversão</div>
+          <div className="flex min-h-[420px] flex-col rounded-2xl border border-line bg-white p-6">
+            <div className="mb-5 font-sans text-[15px] font-extrabold text-ink">Funil de conversão</div>
             <ConversionFunnel steps={funnel} />
           </div>
-          <div className="rounded-2xl border border-line bg-white p-5">
-            <div className="mb-4 font-sans text-[15px] font-extrabold text-ink">Segmentação por região</div>
+          <div className="flex min-h-[420px] flex-col rounded-2xl border border-line bg-white p-6">
+            <div className="mb-5 font-sans text-[15px] font-extrabold text-ink">Segmentação por região</div>
             {regions.length > 0 ? (
               <RegionBars regions={regions} />
             ) : (
@@ -71,16 +71,18 @@ export function DashboardPage() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-line bg-white p-5">
-          <div className="mb-4 font-sans text-[15px] font-extrabold text-ink">
+        <div className="flex min-h-[320px] flex-col rounded-2xl border border-line bg-white p-6">
+          <div className="mb-5 font-sans text-[15px] font-extrabold text-ink">
             Nutrizes por status de cadastro
           </div>
           {statusBreakdown.length > 0 ? (
-            <Donut
-              segments={statusBreakdown}
-              centerValue={String(totalNutrizes)}
-              centerLabel="nutrizes"
-            />
+            <div className="flex flex-1 items-center">
+              <Donut
+                segments={statusBreakdown}
+                centerValue={String(totalNutrizes)}
+                centerLabel="nutrizes"
+              />
+            </div>
           ) : (
             <p className="text-xs text-muted">Nenhuma nutriz cadastrada ainda.</p>
           )}
