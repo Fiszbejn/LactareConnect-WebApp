@@ -43,9 +43,9 @@ const items: { to: string; label: string; icon: keyof typeof icons }[] = [
 export function AdminSidebar() {
   return (
     <div className="flex h-full w-[220px] shrink-0 flex-col border-r border-line bg-white">
-      <div className="border-b border-line-soft px-[18px] pb-[22px] pt-5">
-        <Logo size={26} />
-        <div className="mt-2.5 inline-flex items-center gap-[5px] rounded-lg bg-brand-tint px-2 py-0.5 text-[9.5px] font-bold tracking-[0.4px] text-brand">
+      <div className="flex flex-col items-start gap-3 border-b border-line-soft px-[18px] pb-[22px] pt-5">
+        <Logo size={30} />
+        <div className="inline-flex items-center gap-[5px] rounded-lg bg-brand-tint px-2 py-0.5 text-[11px] font-bold tracking-[0.4px] text-brand">
           <span className="h-[5px] w-[5px] rounded-full bg-brand" />
           ADMIN
         </div>
@@ -57,7 +57,7 @@ export function AdminSidebar() {
             to={item.to}
             end={item.to === '/'}
             className={({ isActive }) =>
-              `flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[13px] ${
+              `flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[14px] ${
                 isActive
                   ? 'bg-brand-tint font-bold text-brand'
                   : 'font-medium text-muted hover:bg-bg'
