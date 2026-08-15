@@ -101,8 +101,7 @@ export function computeRegionBars(nutrizes: Nutriz[], enderecos: Endereco[]): Re
 
   return [...byUf.entries()]
     .map(([name, v]) => ({ name, ...v }))
-    .sort((a, b) => b.total - a.total)
-    .slice(0, 6);
+    .sort((a, b) => b.total - a.total);
 }
 
 export type StatusSlice = { label: string; value: number; color: string };
