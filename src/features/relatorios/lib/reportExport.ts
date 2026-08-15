@@ -1,5 +1,5 @@
-import { jsPDF } from 'jspdf';
 import type { Doacao, Endereco, Nutriz, RelatorioFormato } from '../../../shared/api/types';
+import { buildPdfDocument } from './pdfReport';
 import type { ReportSectionId, ReportSummary } from './reportData';
 import { type DateRange, formatRangeLabel } from './period';
 
@@ -119,84 +119,7 @@ export function buildPdf(
   summary: ReportSummary,
   nutrizRows: NutrizRow[],
 ) {
-  const doc = new jsPDF();
-  const marginX = 14;
-  const pageHeight = doc.internal.pageSize.getHeight();
-  let y = 20;
-
-  function ensureSpace(lines = 1) {
-    if (y + lines * 6 > pageHeight - 16) {
-      doc.addPage();
-      y = 20;
-    }
-  }
-
-  function heading(text: string) {
-    ensureSpace(2);
-    doc.setFontSize(13);
-    doc.setFont('helvetica', 'bold');
-    doc.text(text, marginX, y);
-    y += 8;
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(10.5);
-  }
-
-  function line(text: string) {
-    ensureSpace();
-    doc.text(text, marginX, y);
-    y += 6;
-  }
-
-  doc.setFontSize(18);
-  doc.setFont('helvetica', 'bold');
-  doc.text('Relatório LactareConnect', marginX, y);
-  y += 8;
-  doc.setFontSize(11);
-  doc.setFont('helvetica', 'normal');
-  doc.text(`Período: ${formatRangeLabel(range)}`, marginX, y);
-  y += 6;
-  doc.text(`Gerado em ${new Date().toLocaleString('pt-BR')}`, marginX, y);
-  y += 12;
-
-  if (sections.has('kpis')) {
-    heading('Indicadores principais');
-    for (const k of summary.kpis) line(`${k.label}: ${k.value}  (${k.hint})`);
-    y += 4;
-  }
-
-  if (formato === 'pdf_resumo') {
-    doc.save(reportFilename(range, formato));
-    return;
-  }
-
-  if (sections.has('funnel')) {
-    heading('Funil de conversão');
-    for (const f of summary.funnel) line(`${f.label}: ${f.value.toLocaleString('pt-BR')}`);
-    y += 4;
-  }
-
-  if (sections.has('region')) {
-    heading('Segmentação por região');
-    if (summary.region.length === 0) line('Nenhuma nutriz com endereço cadastrado no período.');
-    for (const r of summary.region) line(`${r.name}: ${r.active} ativas de ${r.total} cadastradas`);
-    y += 4;
-  }
-
-  if (sections.has('status')) {
-    heading('Nutrizes por status de cadastro');
-    for (const s of summary.status) line(`${s.label}: ${s.value}`);
-    y += 4;
-  }
-
-  if (sections.has('nutrizes')) {
-    heading('Lista detalhada de nutrizes');
-    if (nutrizRows.length === 0) line('Nenhuma nutriz cadastrada no período.');
-    for (const n of nutrizRows) {
-      ensureSpace();
-      line(`${n.nome} · ${n.cidade}/${n.uf} · ${n.status} · ${n.doacoes} doações · última: ${n.ultimaColeta ?? '—'}`);
-    }
-  }
-
+  const doc = buildPdfDocument(range, formato, sections, summary, nutrizRows);
   doc.save(reportFilename(range, formato));
 }
 
