@@ -1,0 +1,76 @@
+import { useQuery } from '@tanstack/react-query';
+import { apiClient } from './client';
+import type {
+  Agendamento,
+  Campanha,
+  Doacao,
+  Endereco,
+  ExamePreDoacao,
+  Nutriz,
+  Recompensa,
+  RegiaoAtendimento,
+  Resgate,
+} from './types';
+
+export function useNutrizes() {
+  return useQuery({
+    queryKey: ['nutrizes'],
+    queryFn: async () => (await apiClient.get<Nutriz[]>('/nutrizes')).data,
+  });
+}
+
+export function useEnderecos() {
+  return useQuery({
+    queryKey: ['enderecos'],
+    queryFn: async () => (await apiClient.get<Endereco[]>('/enderecos')).data,
+  });
+}
+
+export function useDoacoes() {
+  return useQuery({
+    queryKey: ['doacoes'],
+    queryFn: async () => (await apiClient.get<Doacao[]>('/doacoes')).data,
+  });
+}
+
+export function useCampanhas() {
+  return useQuery({
+    queryKey: ['campanhas'],
+    queryFn: async () => (await apiClient.get<Campanha[]>('/campanhas')).data,
+  });
+}
+
+export function useAgendamentos() {
+  return useQuery({
+    queryKey: ['agendamentos'],
+    queryFn: async () => (await apiClient.get<Agendamento[]>('/agendamentos')).data,
+  });
+}
+
+export function useRegioesAtendimento() {
+  return useQuery({
+    queryKey: ['regioes-atendimento'],
+    queryFn: async () => (await apiClient.get<RegiaoAtendimento[]>('/regioes-atendimento')).data,
+  });
+}
+
+export function useExamesPreDoacao() {
+  return useQuery({
+    queryKey: ['exames-pre-doacao'],
+    queryFn: async () => (await apiClient.get<ExamePreDoacao[]>('/exames-pre-doacao')).data,
+  });
+}
+
+export function useResgates() {
+  return useQuery({
+    queryKey: ['resgates'],
+    queryFn: async () => (await apiClient.get<Resgate[]>('/resgates')).data,
+  });
+}
+
+export function useRecompensas() {
+  return useQuery({
+    queryKey: ['recompensas'],
+    queryFn: async () => (await apiClient.get<Recompensa[]>('/recompensas')).data,
+  });
+}

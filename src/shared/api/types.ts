@@ -65,3 +65,45 @@ export type RegiaoAtendimento = {
   latitude: number | null;
   longitude: number | null;
 };
+
+export type ExameTipo =
+  | 'carteira_pre_natal'
+  | 'hemograma'
+  | 'sorologias'
+  | 'htlv'
+  | 'sorologia_hiv'
+  | 'vdrl'
+  | 'sorologia_hepatites_b_c';
+
+export type ExameStatus = 'ok' | 'pendente' | 'faltando';
+
+export type ExamePreDoacao = {
+  id: number;
+  tipoExame: ExameTipo;
+  status: ExameStatus;
+  arquivoUrl: string | null;
+  dataEnvio: string | null;
+  nutrizId: number | null;
+};
+
+export type ResgateStatus = 'pendente' | 'enviado' | 'concluido';
+
+export type Resgate = {
+  id: number;
+  status: ResgateStatus;
+  enderecoEntrega: string | null;
+  data: string;
+  nutrizId: number | null;
+  recompensaId: number | null;
+};
+
+export type Recompensa = {
+  id: number;
+  nome: string;
+  parceiro: string;
+  categoria: string;
+  custoGotinhas: number;
+  estoque: number;
+  ativo: boolean;
+  imagemUrl: string | null;
+};

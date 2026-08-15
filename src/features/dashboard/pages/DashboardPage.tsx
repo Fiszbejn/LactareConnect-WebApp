@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { AdminTopbar } from '../../../shared/layout/AdminTopbar';
 import { Donut } from '../../../shared/charts/Donut';
-import { useCampanhas, useDoacoes, useEnderecos, useNutrizes } from '../api/queries';
+import { useCampanhas, useDoacoes, useEnderecos, useNutrizes } from '../../../shared/api/queries';
 import { computeFunnel, computeKpis, computeRegionBars, computeStatusBreakdown } from '../lib/metrics';
 import { KPICard } from '../components/KPICard';
 import { ConversionFunnel } from '../components/ConversionFunnel';

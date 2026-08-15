@@ -1,5 +1,6 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { Logo } from '../brand/Logo';
+import { clearToken } from '../api/auth';
 
 const iconProps = {
   fill: 'none',
@@ -32,6 +33,12 @@ const icons = {
       <path d="M12 2v4h4M7 10h6M7 13h6M7 16h4" {...iconProps} />
     </svg>
   ),
+  logout: (
+    <svg width="18" height="18" viewBox="0 0 20 20">
+      <path d="M8 3H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h4" {...iconProps} />
+      <path d="M13 14l4-4-4-4M17 10H7" {...iconProps} />
+    </svg>
+  ),
 };
 
 const items: { to: string; label: string; icon: keyof typeof icons }[] = [
@@ -41,6 +48,13 @@ const items: { to: string; label: string; icon: keyof typeof icons }[] = [
 ];
 
 export function AdminSidebar() {
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    clearToken();
+    navigate('/login', { replace: true });
+  }
+
   return (
     <div className="flex h-full w-[220px] shrink-0 flex-col border-r border-line bg-white">
       <div className="flex flex-col items-start gap-3 border-b border-line-soft px-[18px] pb-[22px] pt-5">
@@ -50,7 +64,7 @@ export function AdminSidebar() {
           ADMIN
         </div>
       </div>
-      <nav className="flex flex-col gap-0.5 p-2.5">
+      <nav className="flex flex-1 flex-col gap-0.5 p-2.5">
         {items.map((item) => (
           <NavLink
             key={item.to}
@@ -68,6 +82,15 @@ export function AdminSidebar() {
             <span>{item.label}</span>
           </NavLink>
         ))}
+        <div className="flex-1" />
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-[14px] font-medium text-muted hover:bg-bg"
+        >
+          {icons.logout}
+          <span>Sair</span>
+        </button>
       </nav>
     </div>
   );
