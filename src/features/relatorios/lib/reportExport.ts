@@ -38,11 +38,11 @@ export function computeNutrizRows(
 
 function csvEscape(value: string | number) {
   const str = String(value);
-  return /[",\n]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str;
+  return /[";\n]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str;
 }
 
 function csvRow(values: (string | number)[]) {
-  return values.map(csvEscape).join(',');
+  return values.map(csvEscape).join(';');
 }
 
 export function buildCsv(
@@ -99,7 +99,7 @@ export function buildCsv(
     );
   }
 
-  return blocks.join('\n\n');
+  return '﻿' + blocks.join('\n\n');
 }
 
 export function downloadFile(filename: string, content: string, mimeType: string) {
