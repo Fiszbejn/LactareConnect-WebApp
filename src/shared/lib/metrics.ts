@@ -1,4 +1,4 @@
-import type { Campanha, Doacao, Endereco, Nutriz } from '../../../shared/api/types';
+import type { Campanha, Doacao, Endereco, Nutriz } from '../api/types';
 
 function monthKey(iso: string) {
   return iso.slice(0, 7);
