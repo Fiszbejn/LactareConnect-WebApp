@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { isAxiosError } from 'axios';
 import { Logo, LogoMark } from '../../../shared/brand/Logo';
 import { apiClient } from '../../../shared/api/client';
-import { setToken } from '../../../shared/api/auth';
+import { setAdmin, setToken } from '../../../shared/api/auth';
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -17,12 +17,17 @@ export function LoginPage() {
     setError(null);
     setIsSubmitting(true);
     try {
-      const { data } = await apiClient.post<{ accessToken: string }>('/auth/login', {
+      const { data } = await apiClient.post<{
+        accessToken: string;
+        id: number;
+        nome?: string;
+      }>('/auth/login', {
         email,
         senha: password,
         tipo: 'administrador',
       });
       setToken(data.accessToken);
+      setAdmin(data.id, data.nome);
       navigate('/');
     } catch (err) {
       if (isAxiosError(err) && err.response?.status === 401) {

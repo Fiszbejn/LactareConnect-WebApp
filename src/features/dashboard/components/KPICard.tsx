@@ -1,5 +1,5 @@
 import { Sparkline } from '../../../shared/charts/Sparkline';
-import type { Kpi } from '../lib/metrics';
+import type { Kpi } from '../../../shared/lib/metrics';
 
 export function KPICard({ label, value, hint, accent, trend }: Kpi) {
   return (

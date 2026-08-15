@@ -1,4 +1,4 @@
-import type { FunnelStep } from '../lib/metrics';
+import type { FunnelStep } from '../../../shared/lib/metrics';
 
 const COLORS = [
   'var(--color-brand-light)',

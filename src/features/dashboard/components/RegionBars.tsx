@@ -1,4 +1,4 @@
-import type { RegionBar } from '../lib/metrics';
+import type { RegionBar } from '../../../shared/lib/metrics';
 
 export function RegionBars({ regions }: { regions: RegionBar[] }) {
   const max = Math.max(...regions.map((r) => r.total), 1);

@@ -1,11 +1,131 @@
+import { useMemo, useState } from 'react';
 import { AdminTopbar } from '../../../shared/layout/AdminTopbar';
+import {
+  useAdministradores,
+  useCampanhas,
+  useCreateRelatorioGerado,
+  useDoacoes,
+  useEnderecos,
+  useNutrizes,
+  useRelatoriosGerados,
+} from '../../../shared/api/queries';
+import { getAdminId } from '../../../shared/api/auth';
+import type { RelatorioFormato } from '../../../shared/api/types';
+import { GeneratorCard } from '../components/GeneratorCard';
+import { HistoryPanel } from '../components/HistoryPanel';
+import { type DateRange, type PeriodPreset, previousPeriod, resolvePeriod } from '../lib/period';
+import { computeReportSummary, filterByPeriod, REPORT_SECTIONS, type ReportSectionId } from '../lib/reportData';
+import { buildCsv, buildPdf, computeNutrizRows, downloadFile, reportFilename } from '../lib/reportExport';
 
 export function RelatoriosPage() {
+  const nutrizes = useNutrizes();
+  const doacoes = useDoacoes();
+  const campanhas = useCampanhas();
+  const enderecos = useEnderecos();
+  const administradores = useAdministradores();
+  const relatoriosGerados = useRelatoriosGerados();
+  const createRelatorio = useCreateRelatorioGerado();
+
+  const [preset, setPreset] = useState<PeriodPreset>('ultimos-30-dias');
+  const [customRange, setCustomRange] = useState<DateRange>(() => resolvePeriod('ultimos-30-dias'));
+  const [sections, setSections] = useState<Set<ReportSectionId>>(
+    () => new Set(REPORT_SECTIONS.filter((s) => s.defaultOn).map((s) => s.id)),
+  );
+  const [formato, setFormato] = useState<RelatorioFormato>('pdf_completo');
+
+  function toggleSection(id: ReportSectionId) {
+    setSections((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  const isLoading =
+    nutrizes.isLoading || doacoes.isLoading || campanhas.isLoading || enderecos.isLoading;
+  const isError = nutrizes.isError || doacoes.isError || campanhas.isError || enderecos.isError;
+
+  const range = useMemo(() => resolvePeriod(preset, customRange), [preset, customRange]);
+
+  const summary = useMemo(() => {
+    if (!nutrizes.data || !doacoes.data || !campanhas.data || !enderecos.data) return null;
+    const atual = filterByPeriod(nutrizes.data, doacoes.data, campanhas.data, range);
+    const anterior = filterByPeriod(nutrizes.data, doacoes.data, campanhas.data, previousPeriod(range));
+    return computeReportSummary(atual, anterior, enderecos.data);
+  }, [nutrizes.data, doacoes.data, campanhas.data, enderecos.data, range]);
+
+  const nutrizesNoPeriodo = useMemo(() => {
+    if (!nutrizes.data) return [];
+    return nutrizes.data.filter((n) => n.dataCadastro.slice(0, 10) >= range.start && n.dataCadastro.slice(0, 10) <= range.end);
+  }, [nutrizes.data, range]);
+
+  if (isLoading) {
+    return (
+      <>
+        <AdminTopbar title="Relatórios" subtitle="Carregando dados…" />
+        <div className="flex-1 p-7 text-sm text-muted">Carregando…</div>
+      </>
+    );
+  }
+
+  if (isError || !summary) {
+    return (
+      <>
+        <AdminTopbar title="Relatórios" subtitle="Não foi possível carregar os dados" />
+        <div className="flex-1 p-7 text-sm text-error">
+          Erro ao consultar o backend. Confirme se a API está rodando em{' '}
+          <code>{import.meta.env.VITE_API_URL}</code>.
+        </div>
+      </>
+    );
+  }
+
+  function handleGenerate() {
+    const nutrizRows = computeNutrizRows(nutrizesNoPeriodo, doacoes.data!, enderecos.data!);
+
+    if (formato === 'csv') {
+      const csv = buildCsv(range, sections, summary!, nutrizRows);
+      downloadFile(reportFilename(range, formato), csv, 'text/csv;charset=utf-8');
+    } else {
+      buildPdf(range, formato, sections, summary!, nutrizRows);
+    }
+
+    const adminId = getAdminId();
+    if (adminId) {
+      createRelatorio.mutate({
+        periodoInicio: range.start,
+        periodoFim: range.end,
+        secoesIncluidas: [...sections].join(','),
+        formato,
+        administradorId: adminId,
+      });
+    }
+  }
+
   return (
     <>
-      <AdminTopbar title="Relatórios" subtitle="Exporte o dashboard em PDF por período" />
+      <AdminTopbar title="Relatórios" subtitle="Exporte os indicadores do painel por período" />
       <div className="flex-1 overflow-auto p-7">
-        <p className="text-sm text-muted">Geração e histórico de relatórios entram aqui na próxima etapa.</p>
+        <div className="grid grid-cols-[1.4fr_1fr] gap-5">
+          <GeneratorCard
+            preset={preset}
+            onPresetChange={setPreset}
+            customRange={customRange}
+            onCustomRangeChange={setCustomRange}
+            sections={sections}
+            onToggleSection={toggleSection}
+            formato={formato}
+            onFormatoChange={setFormato}
+            onGenerate={handleGenerate}
+            isGenerating={createRelatorio.isPending}
+          />
+          <HistoryPanel
+            summary={summary}
+            relatorios={relatoriosGerados.data ?? []}
+            administradores={administradores.data ?? []}
+          />
+        </div>
       </div>
     </>
   );

@@ -1,14 +1,17 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from './client';
 import type {
+  Administrador,
   Agendamento,
   Campanha,
+  CreateRelatorioGeradoInput,
   Doacao,
   Endereco,
   ExamePreDoacao,
   Nutriz,
   Recompensa,
   RegiaoAtendimento,
+  RelatorioGerado,
   Resgate,
 } from './types';
 
@@ -72,5 +75,30 @@ export function useRecompensas() {
   return useQuery({
     queryKey: ['recompensas'],
     queryFn: async () => (await apiClient.get<Recompensa[]>('/recompensas')).data,
+  });
+}
+
+export function useAdministradores() {
+  return useQuery({
+    queryKey: ['administradores'],
+    queryFn: async () => (await apiClient.get<Administrador[]>('/administradores')).data,
+  });
+}
+
+export function useRelatoriosGerados() {
+  return useQuery({
+    queryKey: ['relatorios-gerados'],
+    queryFn: async () => (await apiClient.get<RelatorioGerado[]>('/relatorios-gerados')).data,
+  });
+}
+
+export function useCreateRelatorioGerado() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: CreateRelatorioGeradoInput) =>
+      (await apiClient.post<RelatorioGerado>('/relatorios-gerados', input)).data,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['relatorios-gerados'] });
+    },
   });
 }

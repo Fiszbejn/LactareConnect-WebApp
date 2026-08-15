@@ -107,3 +107,32 @@ export type Recompensa = {
   ativo: boolean;
   imagemUrl: string | null;
 };
+
+export type Administrador = {
+  id: number;
+  nome: string;
+  email: string;
+  papel: string;
+  regiaoAtendimentoVinculadaId: number | null;
+};
+
+export type RelatorioFormato = 'pdf_completo' | 'pdf_resumo' | 'csv';
+
+export type RelatorioGerado = {
+  id: number;
+  periodoInicio: string;
+  periodoFim: string;
+  secoesIncluidas: string;
+  formato: RelatorioFormato;
+  arquivoUrl: string | null;
+  dataGeracao: string;
+  administradorId: number | null;
+};
+
+export type CreateRelatorioGeradoInput = {
+  periodoInicio: string;
+  periodoFim: string;
+  secoesIncluidas: string;
+  formato: RelatorioFormato;
+  administradorId: number;
+};
