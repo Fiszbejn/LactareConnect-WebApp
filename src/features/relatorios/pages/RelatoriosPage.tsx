@@ -26,8 +26,8 @@ export function RelatoriosPage() {
   const relatoriosGerados = useRelatoriosGerados();
   const createRelatorio = useCreateRelatorioGerado();
 
-  const [preset, setPreset] = useState<PeriodPreset>('ultimos-30-dias');
-  const [customRange, setCustomRange] = useState<DateRange>(() => resolvePeriod('ultimos-30-dias'));
+  const [preset, setPreset] = useState<PeriodPreset>('este-mes');
+  const [customRange, setCustomRange] = useState<DateRange>(() => resolvePeriod('este-mes'));
   const [sections, setSections] = useState<Set<ReportSectionId>>(
     () => new Set(REPORT_SECTIONS.filter((s) => s.defaultOn).map((s) => s.id)),
   );

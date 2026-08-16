@@ -1,6 +1,5 @@
 export type PeriodPreset =
   | 'ultimos-7-dias'
-  | 'ultimos-30-dias'
   | 'este-mes'
   | 'mes-passado'
   | 'trimestre-atual'
@@ -8,7 +7,6 @@ export type PeriodPreset =
 
 export const PERIOD_PRESETS: { value: PeriodPreset; label: string }[] = [
   { value: 'ultimos-7-dias', label: 'Últimos 7 dias' },
-  { value: 'ultimos-30-dias', label: 'Últimos 30 dias' },
   { value: 'este-mes', label: 'Este mês' },
   { value: 'mes-passado', label: 'Mês passado' },
   { value: 'trimestre-atual', label: 'Trimestre atual' },
@@ -37,12 +35,6 @@ export function resolvePeriod(preset: PeriodPreset, custom?: DateRange): DateRan
   if (preset === 'ultimos-7-dias') {
     const start = new Date(today);
     start.setDate(start.getDate() - 6);
-    return { start: toIsoDate(start), end: toIsoDate(today) };
-  }
-
-  if (preset === 'ultimos-30-dias') {
-    const start = new Date(today);
-    start.setDate(start.getDate() - 29);
     return { start: toIsoDate(start), end: toIsoDate(today) };
   }
 
