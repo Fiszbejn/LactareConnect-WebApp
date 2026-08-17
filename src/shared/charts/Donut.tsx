@@ -38,7 +38,7 @@ export function Donut({ segments, centerLabel, centerValue }: DonutProps) {
   });
 
   return (
-    <div className="flex w-full items-center gap-10">
+    <div className="inline-flex items-center gap-9">
       <svg width="180" height="180" viewBox="0 0 180 180" className="shrink-0">
         {arcs.map((a, i) => (
           <path key={i} d={a.d} fill={a.color} />
@@ -50,11 +50,11 @@ export function Donut({ segments, centerLabel, centerValue }: DonutProps) {
           {centerLabel}
         </text>
       </svg>
-      <div className="flex flex-1 flex-col gap-4">
+      <div className="flex flex-col gap-3.5">
         {segments.map((s, i) => (
-          <div key={i} className="flex items-center gap-3 border-b border-line-soft pb-4 last:border-0 last:pb-0">
-            <span className="h-3 w-3 shrink-0 rounded-full" style={{ background: s.color }} />
-            <span className="flex-1 text-sm text-ink">{s.label}</span>
+          <div key={i} className="flex items-center gap-3 border-b border-line-soft pb-3.5 last:border-0 last:pb-0">
+            <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: s.color }} />
+            <span className="min-w-[84px] text-sm text-ink">{s.label}</span>
             <span className="text-base font-semibold text-muted">{s.value}</span>
           </div>
         ))}

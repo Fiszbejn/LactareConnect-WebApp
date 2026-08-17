@@ -10,10 +10,10 @@ import {
   useRelatoriosGerados,
 } from '../../../shared/api/queries';
 import { getAdminId } from '../../../shared/api/auth';
-import type { RelatorioFormato } from '../../../shared/api/types';
+import type { RelatorioFormato, RelatorioGerado } from '../../../shared/api/types';
 import { GeneratorCard } from '../components/GeneratorCard';
 import { HistoryPanel } from '../components/HistoryPanel';
-import { type DateRange, type PeriodPreset, previousPeriod, resolvePeriod } from '../lib/period';
+import { type DateRange, type PeriodPreset, previousPeriod, resolvePeriod } from '../../../shared/lib/period';
 import { computeReportSummary, filterByPeriod, REPORT_SECTIONS, type ReportSectionId } from '../lib/reportData';
 import { buildCsv, buildPdf, computeNutrizRows, downloadFile, reportFilename } from '../lib/reportExport';
 
@@ -55,11 +55,6 @@ export function RelatoriosPage() {
     return computeReportSummary(atual, anterior, enderecos.data);
   }, [nutrizes.data, doacoes.data, campanhas.data, enderecos.data, range]);
 
-  const nutrizesNoPeriodo = useMemo(() => {
-    if (!nutrizes.data) return [];
-    return nutrizes.data.filter((n) => n.dataCadastro.slice(0, 10) >= range.start && n.dataCadastro.slice(0, 10) <= range.end);
-  }, [nutrizes.data, range]);
-
   if (isLoading) {
     return (
       <>
@@ -81,15 +76,22 @@ export function RelatoriosPage() {
     );
   }
 
-  function handleGenerate() {
-    const nutrizRows = computeNutrizRows(nutrizesNoPeriodo, doacoes.data!, enderecos.data!);
+  function buildAndDownload(targetRange: DateRange, targetSections: Set<ReportSectionId>, targetFormato: RelatorioFormato) {
+    const atual = filterByPeriod(nutrizes.data!, doacoes.data!, campanhas.data!, targetRange);
+    const anterior = filterByPeriod(nutrizes.data!, doacoes.data!, campanhas.data!, previousPeriod(targetRange));
+    const targetSummary = computeReportSummary(atual, anterior, enderecos.data!);
+    const nutrizRows = computeNutrizRows(atual.nutrizes, doacoes.data!, enderecos.data!);
 
-    if (formato === 'csv') {
-      const csv = buildCsv(range, sections, summary!, nutrizRows);
-      downloadFile(reportFilename(range, formato), csv, 'text/csv;charset=utf-8');
+    if (targetFormato === 'csv') {
+      const csv = buildCsv(targetRange, targetSections, targetSummary, nutrizRows);
+      downloadFile(reportFilename(targetRange, targetFormato), csv, 'text/csv;charset=utf-8');
     } else {
-      buildPdf(range, formato, sections, summary!, nutrizRows);
+      buildPdf(targetRange, targetFormato, targetSections, targetSummary, nutrizRows);
     }
+  }
+
+  function handleGenerate() {
+    buildAndDownload(range, sections, formato);
 
     const adminId = getAdminId();
     if (adminId) {
@@ -101,6 +103,12 @@ export function RelatoriosPage() {
         administradorId: adminId,
       });
     }
+  }
+
+  function handleRedownload(relatorio: RelatorioGerado) {
+    const targetRange: DateRange = { start: relatorio.periodoInicio, end: relatorio.periodoFim };
+    const targetSections = new Set(relatorio.secoesIncluidas.split(',').filter(Boolean) as ReportSectionId[]);
+    buildAndDownload(targetRange, targetSections, relatorio.formato);
   }
 
   return (
@@ -124,6 +132,7 @@ export function RelatoriosPage() {
             summary={summary}
             relatorios={relatoriosGerados.data ?? []}
             administradores={administradores.data ?? []}
+            onDownload={handleRedownload}
           />
         </div>
       </div>

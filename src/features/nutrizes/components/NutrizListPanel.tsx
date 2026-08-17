@@ -119,7 +119,7 @@ export function NutrizListPanel({ nutrizes, enderecos, doacoes, selectedId, onSe
               {['Nutriz', 'Cidade · UF', 'Status', 'Doações', 'Última coleta'].map((h, i) => (
                 <th
                   key={h}
-                  className={`border-b border-line px-4 py-2.5 font-sans text-[10px] font-bold uppercase tracking-wide text-muted ${
+                  className={`border-b border-line px-4 py-2.5 font-sans text-[10.5px] font-bold uppercase tracking-wide text-muted ${
                     i >= 3 ? 'text-right' : 'text-left'
                   }`}
                 >
@@ -154,24 +154,24 @@ export function NutrizListPanel({ nutrizes, enderecos, doacoes, selectedId, onSe
                         {initials(n.nome)}
                       </div>
                       <span
-                        className={`font-sans text-[12.5px] text-ink ${active ? 'font-bold' : 'font-semibold'}`}
+                        className={`font-sans text-[15px] text-ink ${active ? 'font-bold' : 'font-semibold'}`}
                       >
                         {n.nome}
                       </span>
                     </div>
                   </td>
-                  <td className="px-4 py-3 font-sans text-[12px] text-muted">
+                  <td className="px-4 py-3 font-sans text-[13px] text-muted">
                     {endereco ? `${endereco.cidade} · ${endereco.uf}` : '—'}
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`rounded-lg px-2 py-0.5 font-sans text-[10px] font-bold ${tag.className}`}>
+                    <span className={`rounded-lg px-3 py-1 font-sans text-[12px] font-bold ${tag.className}`}>
                       {tag.label}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-right font-sans text-[12px] font-semibold text-ink">
+                  <td className="px-4 py-3 text-right font-sans text-[13px] font-semibold text-ink">
                     {nDoacoes.length}
                   </td>
-                  <td className="px-4 py-3 text-right font-sans text-[12px] text-muted">
+                  <td className="px-4 py-3 text-right font-sans text-[13px] text-muted">
                     {ultima ? formatDate(ultima.dataColeta) : '—'}
                   </td>
                 </tr>
