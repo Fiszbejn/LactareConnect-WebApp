@@ -1,4 +1,4 @@
-import { PERIOD_PRESETS, type DateRange, type PeriodPreset } from '../lib/period';
+import { PERIOD_PRESETS, type DateRange, type PeriodPreset } from '../../../shared/lib/period';
 import type { ReportSectionId } from '../lib/reportData';
 import { REPORT_SECTIONS } from '../lib/reportData';
 import type { RelatorioFormato } from '../../../shared/api/types';

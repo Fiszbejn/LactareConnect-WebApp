@@ -1,4 +1,4 @@
-import type { Campanha, Doacao, Endereco, Nutriz } from '../../../shared/api/types';
+import type { Endereco } from '../../../shared/api/types';
 import {
   computeFunnel,
   computeKpis,
@@ -6,10 +6,10 @@ import {
   computeStatusBreakdown,
   type FunnelStep,
   type Kpi,
+  type PeriodData,
   type RegionBar,
   type StatusSlice,
 } from '../../../shared/lib/metrics';
-import { type DateRange, inRange } from './period';
 
 export type ReportSectionId = 'kpis' | 'funnel' | 'region' | 'status' | 'nutrizes';
 
@@ -21,24 +21,7 @@ export const REPORT_SECTIONS: { id: ReportSectionId; label: string; defaultOn: b
   { id: 'nutrizes', label: 'Lista detalhada de nutrizes (anexo CSV)', defaultOn: false },
 ];
 
-export type PeriodData = {
-  nutrizes: Nutriz[];
-  doacoes: Doacao[];
-  campanhas: Campanha[];
-};
-
-export function filterByPeriod(
-  nutrizes: Nutriz[],
-  doacoes: Doacao[],
-  campanhas: Campanha[],
-  range: DateRange,
-): PeriodData {
-  return {
-    nutrizes: nutrizes.filter((n) => inRange(n.dataCadastro, range)),
-    doacoes: doacoes.filter((d) => inRange(d.dataColeta, range)),
-    campanhas: campanhas.filter((c) => inRange(c.dataEnvio, range)),
-  };
-}
+export { filterByPeriod } from '../../../shared/lib/metrics';
 
 export type ReportSummary = {
   kpis: Kpi[];

@@ -1,7 +1,7 @@
 import type { Doacao, Endereco, Nutriz, RelatorioFormato } from '../../../shared/api/types';
 import { buildPdfDocument } from './pdfReport';
 import type { ReportSectionId, ReportSummary } from './reportData';
-import { type DateRange, formatRangeLabel } from './period';
+import { type DateRange, formatRangeLabel } from '../../../shared/lib/period';
 
 export type NutrizRow = {
   nome: string;

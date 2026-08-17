@@ -1,7 +1,7 @@
 import { jsPDF } from 'jspdf';
 import type { RelatorioFormato } from '../../../shared/api/types';
 import type { FunnelStep, Kpi, RegionBar, StatusSlice } from '../../../shared/lib/metrics';
-import { type DateRange, formatRangeLabel } from './period';
+import { type DateRange, formatRangeLabel } from '../../../shared/lib/period';
 import type { ReportSectionId, ReportSummary } from './reportData';
 import type { NutrizRow } from './reportExport';
 

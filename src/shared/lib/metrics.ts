@@ -1,4 +1,24 @@
 import type { Campanha, Doacao, Endereco, Nutriz } from '../api/types';
+import { type DateRange, inRange } from './period';
+
+export type PeriodData = {
+  nutrizes: Nutriz[];
+  doacoes: Doacao[];
+  campanhas: Campanha[];
+};
+
+export function filterByPeriod(
+  nutrizes: Nutriz[],
+  doacoes: Doacao[],
+  campanhas: Campanha[],
+  range: DateRange,
+): PeriodData {
+  return {
+    nutrizes: nutrizes.filter((n) => inRange(n.dataCadastro, range)),
+    doacoes: doacoes.filter((d) => inRange(d.dataColeta, range)),
+    campanhas: campanhas.filter((c) => inRange(c.dataEnvio, range)),
+  };
+}
 
 function monthKey(iso: string) {
   return iso.slice(0, 7);

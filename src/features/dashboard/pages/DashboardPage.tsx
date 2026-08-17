@@ -2,18 +2,22 @@ import { useState } from 'react';
 import { AdminTopbar } from '../../../shared/layout/AdminTopbar';
 import { Donut } from '../../../shared/charts/Donut';
 import { useCampanhas, useDoacoes, useEnderecos, useNutrizes } from '../../../shared/api/queries';
+import { getAdminNome } from '../../../shared/api/auth';
 import {
   computeFunnel,
   computeKpis,
   computeRegionBars,
   computeStatusBreakdown,
+  filterByPeriod,
 } from '../../../shared/lib/metrics';
+import { resolvePeriod, type PeriodPreset } from '../../../shared/lib/period';
 import { KPICard } from '../components/KPICard';
 import { ConversionFunnel } from '../components/ConversionFunnel';
 import { RegionBars } from '../components/RegionBars';
 
 export function DashboardPage() {
   const [selectedUf, setSelectedUf] = useState<string | null>(null);
+  const [preset, setPreset] = useState<PeriodPreset>('este-mes');
   const nutrizes = useNutrizes();
   const enderecos = useEnderecos();
   const doacoes = useDoacoes();
@@ -43,11 +47,16 @@ export function DashboardPage() {
     );
   }
 
-  const kpis = computeKpis(nutrizes.data!, campanhas.data!, doacoes.data!);
-  const allRegions = computeRegionBars(nutrizes.data!, enderecos.data!);
+  const range = resolvePeriod(preset);
+  const periodo = filterByPeriod(nutrizes.data!, doacoes.data!, campanhas.data!, range);
+
+  const kpis = computeKpis(periodo.nutrizes, periodo.campanhas, periodo.doacoes);
+  const allRegions = computeRegionBars(periodo.nutrizes, enderecos.data!);
   const regions = allRegions.slice(0, 6);
   const extraRegionsCount = allRegions.length - regions.length;
-  const statusBreakdown = computeStatusBreakdown(nutrizes.data!);
+  const statusBreakdown = computeStatusBreakdown(periodo.nutrizes);
+  const totalNutrizesPeriodo = periodo.nutrizes.length;
+
   const totalNutrizes = nutrizes.data!.length;
   const totalAprovadas = nutrizes.data!.filter((n) => n.status === 'aprovada').length;
 
@@ -56,18 +65,21 @@ export function DashboardPage() {
     ? new Set(enderecos.data!.filter((e) => e.uf === selectedUf).map((e) => e.nutrizId))
     : null;
   const funnelNutrizes = nutrizIdsInUf
-    ? nutrizes.data!.filter((n) => nutrizIdsInUf.has(n.id))
-    : nutrizes.data!;
+    ? periodo.nutrizes.filter((n) => nutrizIdsInUf.has(n.id))
+    : periodo.nutrizes;
   const funnelDoacoes = nutrizIdsInUf
-    ? doacoes.data!.filter((d) => nutrizIdsInUf.has(d.nutrizId))
-    : doacoes.data!;
-  const funnel = computeFunnel(campanhas.data!, funnelNutrizes, funnelDoacoes);
+    ? periodo.doacoes.filter((d) => nutrizIdsInUf.has(d.nutrizId))
+    : periodo.doacoes;
+  const funnel = computeFunnel(periodo.campanhas, funnelNutrizes, funnelDoacoes);
+
+  const primeiroNome = (getAdminNome() ?? 'Admin').split(' ')[0];
 
   return (
     <>
       <AdminTopbar
-        title="Dashboard"
+        title={`Olá, ${primeiroNome} ✨`}
         subtitle={`${totalNutrizes} nutrizes cadastradas · ${totalAprovadas} aprovadas`}
+        period={{ value: preset, onChange: setPreset }}
       />
       <div className="flex-1 overflow-auto p-7">
         <div className="mb-5 flex gap-4">
@@ -124,7 +136,7 @@ export function DashboardPage() {
             <div className="flex flex-1 items-center">
               <Donut
                 segments={statusBreakdown}
-                centerValue={String(totalNutrizes)}
+                centerValue={String(totalNutrizesPeriodo)}
                 centerLabel="nutrizes"
               />
             </div>
